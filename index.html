@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>מדריך מלא: 24 אפקטי Image Hover ב-CSS</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lato:400,700"
+    />
+    <style>
+      /* ===================================================
+       1. איפוס וסגנון גלובלי
+       =================================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          "Lato",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background-color: #1e272e;
+        color: #ffffff;
+        padding: 30px 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+        color: #f1f2f6;
+        text-align: center;
+      }
+
+      .main-subtitle {
+        color: #a4b0be;
+        margin-bottom: 30px;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      /* רשת כפתורי הניווט */
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 10px;
+        width: 100%;
+        max-width: 1100px;
+        margin-bottom: 35px;
+      }
+
+      .menu-btn {
+        background: #2f3542;
+        border: 1px solid #57606f;
+        color: #f1f2f6;
+        padding: 10px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      .menu-btn:hover {
+        background: #70a1ff;
+        color: #1e272e;
+        border-color: #70a1ff;
+      }
+
+      .menu-btn.active {
+        background: #ff4757;
+        color: #ffffff;
+        border-color: #ff4757;
+      }
+
+      /* אזור התצוגה וההסבר */
+      .viewer {
+        background: #2f3542;
+        border-radius: 14px;
+        padding: 30px;
+        max-width: 900px;
+        width: 100%;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .lesson-header {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        border-right: 5px solid #ff4757;
+        padding: 16px 20px;
+        margin-bottom: 30px;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .lesson-title {
+        font-size: 20px;
+        color: #ff6b81;
+        font-weight: bold;
+      }
+
+      .css-badge {
+        background: #1e272e;
+        color: #7bed9f;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        direction: ltr;
+        border: 1px solid #2ed573;
+      }
+
+      .lesson-desc {
+        font-size: 14.5px;
+        color: #ced6e0;
+        line-height: 1.5;
+      }
+
+      /* בימת ההדגמה החיה */
+      .stage {
+        min-height: 360px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ===================================================
+       2. מבנה בסיס לכרטיסי ה-Hover
+       =================================================== */
+      .hover-box {
+        width: 480px;
+        height: 310px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background-color: #000;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+      }
+
+      .hover-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: all 0.5s ease;
+      }
+
+      .hover-caption {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 25px;
+        box-sizing: border-box;
+        transition: all 0.5s ease;
+        z-index: 3;
+      }
+
+      .hover-caption h2 {
+        text-transform: uppercase;
+        font-size: 22px;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+      }
+
+      .hover-caption p {
+        font-size: 14.5px;
+        line-height: 1.4;
+        max-width: 85%;
+        color: #f1f2f6;
+      }
+
+      .hover-btn {
+        margin-top: 15px;
+        padding: 8px 18px;
+        background: #000000;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+
+      /* ===================================================
+       3. הגדרות CSS לכל 24 האפקטים
+       =================================================== */
+
+      /* 1. זום וסיבוב עם כותרת שקופה[cite: 28] */
+      .fx-1 .hover-caption {
+        opacity: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .fx-1:hover img {
+        transform: scale(1.3) rotate(15deg);
+      }
+      .fx-1:hover .hover-caption {
+        opacity: 1;
+      }
+
+      /* 2. כותרת יורדת מלמעלה ותמונה מסתובבת הפוך[cite: 28] */
+      .fx-2 .hover-caption {
+        transform: translateY(-100%);
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .fx-2:hover img {
+        transform: scale(1.3) rotate(-15deg);
+      }
+      .fx-2:hover .hover-caption {
+        transform: translateY(0);
+      }
+
+      /* 3. החלפת מקומות אנכית[cite: 28] */
+      .fx-3 .hover-caption {
+        background: #000;
+        transform: translateY(-100%);
+      }
+      .fx-3:hover img {
+        transform: translateY(100%);
+      }
+      .fx-3:hover .hover-caption {
+        transform: translateY(0);
+      }
+
+      /* 4. פס תחתון (30%) שמתרומם למעלה[cite: 28] */
+      .fx-4 .hover-caption {
+        top: auto;
+        bottom: 0;
+        height: 30%;
+        background: #000;
+        transform: translateY(100%);
+      }
+      .fx-4:hover img {
+        transform: translateY(-20%);
+      }
+      .fx-4:hover .hover-caption {
+        transform: translateY(0);
+      }
+
+      /* 5. שכבה צבעונית מסתובבת ב-45 מעלות[cite: 28] */
+      .fx-5 .overlay-rotate {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #006266;
+        opacity: 0.7;
+        transform: translateY(100%);
+        transition: all 0.4s ease;
+      }
+      .fx-5 .hover-caption {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      .fx-5:hover .overlay-rotate {
+        transform: translateY(0) rotate(45deg) scale(2.2);
+      }
+      .fx-5:hover .hover-caption {
+        transform: translateY(0);
+        opacity: 1;
+        transition-delay: 0.15s;
+      }
+
+      /* 6. מסגרת לבנה עבה וזום עם סיבוב קל[cite: 28] */
+      .fx-6 {
+        border: 10px solid #ffffff;
+      }
+      .fx-6:hover img {
+        transform: scale(1.2) rotate(9deg);
+      }
+
+      /* 7. כניסה מדורגת של טקסטים מכיוונים נגדיים[cite: 28] */
+      .fx-7 .bg-bar {
+        position: absolute;
+        width: 120%;
+        height: 210%;
+        background: #2d3436;
+        opacity: 0.85;
+        transform: translate(550px, 300px) rotate(45deg);
+        transition: all 0.5s ease;
+      }
+      .fx-7 h2 {
+        transform: translateY(200px);
+        transition: 0.3s;
+        opacity: 0;
+      }
+      .fx-7 p {
+        transform: translateY(-200px);
+        transition: 0.4s;
+        opacity: 0;
+      }
+      .fx-7 a {
+        transform: translateY(100px);
+        transition: 0.5s;
+        opacity: 0;
+      }
+      .fx-7:hover .bg-bar {
+        transform: translate(-50px, -150px) rotate(45deg);
+      }
+      .fx-7:hover h2,
+      .fx-7:hover p,
+      .fx-7:hover a {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* 8. שילוב סיבובים וכניסות אלכסוניות[cite: 28] */
+      .fx-8 .bg-bar {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #2d3436;
+        opacity: 0.85;
+        transform: translate(650px, -100px) rotate(180deg);
+        transition: all 0.35s ease;
+      }
+      .fx-8 h2 {
+        transform: translateY(-150px);
+        transition: 0.3s;
+      }
+      .fx-8 p {
+        transform: translateY(300px) rotate(90deg);
+        transition: 0.4s;
+      }
+      .fx-8 a {
+        transform: translateY(0);
+        opacity: 0;
+        transition: 0.3s;
+      }
+      .fx-8:hover .bg-bar {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      .fx-8:hover h2 {
+        transform: translateY(0);
+      }
+      .fx-8:hover p {
+        transform: translateY(0) rotate(0deg);
+      }
+      .fx-8:hover a {
+        opacity: 1;
+      }
+
+      /* 9. כיווץ התמונה ל-0 והחלפתה בשכבה מסתובבת[cite: 28] */
+      .fx-9 .bg-bar {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #2d3436;
+        opacity: 0.85;
+        transform: scale(0) rotate(-180deg);
+        transition: all 0.5s ease;
+      }
+      .fx-9 h2,
+      .fx-9 p,
+      .fx-9 a {
+        opacity: 0;
+        transition: 0.4s;
+      }
+      .fx-9:hover img {
+        transform: scale(0);
+        opacity: 0;
+      }
+      .fx-9:hover .bg-bar {
+        transform: scale(1) rotate(0deg);
+      }
+      .fx-9:hover h2,
+      .fx-9:hover p,
+      .fx-9:hover a {
+        opacity: 1;
+        transition-delay: 0.25s;
+      }
+
+      /* 10. טקסטים שמגיעים ממרחק עצום (scale: 10)[cite: 28] */
+      .fx-10 .bg-bar {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #006266;
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      .fx-10 h2,
+      .fx-10 p {
+        transform: scale(10);
+        opacity: 0;
+        transition: all 0.35s;
+      }
+      .fx-10 a {
+        transform: translateY(150px);
+        opacity: 0;
+        transition: 0.25s;
+      }
+      .fx-10:hover .bg-bar {
+        opacity: 0.9;
+      }
+      .fx-10:hover h2,
+      .fx-10:hover p {
+        transform: scale(1);
+        opacity: 1;
+      }
+      .fx-10:hover a {
+        transform: translateY(0);
+        opacity: 1;
+        transition-delay: 0.2s;
+      }
+
+      /* 11. תמונה מסתובבת ב-720 מעלות ונעלמת[cite: 28] */
+      .fx-11 .bg-bar {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #2d3436;
+        opacity: 0;
+        transition: all 0.4s ease;
+      }
+      .fx-11 h2 {
+        transform: translateY(-300px);
+        transition: 0.3s;
+      }
+      .fx-11 p {
+        transform: translateY(-30px);
+        opacity: 0;
+        transition: 0.3s;
+      }
+      .fx-11 a {
+        transform: translateY(150px);
+        transition: 0.3s;
+      }
+      .fx-11:hover img {
+        transform: rotate(720deg) scale(0);
+        opacity: 0;
+      }
+      .fx-11:hover .bg-bar {
+        opacity: 0.95;
+      }
+      .fx-11:hover h2,
+      .fx-11:hover p,
+      .fx-11:hover a {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* 12. צמצם מעגלי מתרחב */
+      .fx-12 .hover-caption {
+        background: #0984e3;
+        clip-path: circle(0% at 50% 50%);
+        transition: clip-path 0.5s ease-in-out;
+      }
+      .fx-12:hover .hover-caption {
+        clip-path: circle(75% at 50% 50%);
+      }
+
+      /* 13. זכוכית מטושטשת (Frosted Glass) */
+      .fx-13 .hover-caption {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(0px);
+        opacity: 0;
+        transition: all 0.4s ease;
+      }
+      .fx-13:hover img {
+        filter: blur(5px) grayscale(40%);
+      }
+      .fx-13:hover .hover-caption {
+        backdrop-filter: blur(8px);
+        opacity: 1;
+      }
+
+      /* 14. וילונות אלכסוניים (Diagonal Slices) */
+      .fx-14 .hover-caption {
+        background: #d63031;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+        transition: clip-path 0.5s ease-in-out;
+      }
+      .fx-14:hover .hover-caption {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      }
+
+      /* 15. כרטיס תלת-ממדי מרחף (Card Pop & Glow) */
+      .fx-15 {
+        transition:
+          transform 0.4s ease,
+          box-shadow 0.4s ease;
+      }
+      .fx-15 .hover-caption {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      .fx-15:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 20px 35px rgba(112, 161, 255, 0.4);
+      }
+      .fx-15:hover .hover-caption {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* 16. זום פנורמי איטי (Ken Burns Effect) */
+      .fx-16 img {
+        transform-origin: center center;
+        transition: transform 5s ease-out;
+      }
+      .fx-16 .hover-caption {
+        background: rgba(0, 0, 0, 0.4);
+        opacity: 0;
+      }
+      .fx-16:hover img {
+        transform: scale(1.35) translate(-15px, -10px);
+      }
+      .fx-16:hover .hover-caption {
+        opacity: 1;
+      }
+
+      /* 17. מסך מפוצל שנפתח (Curtain Split) */
+      .fx-17::before,
+      .fx-17::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        background: #1e272e;
+        transition: transform 0.5s ease-in-out;
+        z-index: 2;
+      }
+      .fx-17::before {
+        left: 0;
+      }
+      .fx-17::after {
+        right: 0;
+      }
+      .fx-17:hover::before {
+        transform: translateX(-100%);
+      }
+      .fx-17:hover::after {
+        transform: translateX(100%);
+      }
+
+      /* 18. הפיכה משחור-לבן לצבע מלא (Grayscale to Color) */
+      .fx-18 img {
+        filter: grayscale(100%) contrast(120%);
+        transition: filter 0.6s ease;
+      }
+      .fx-18:hover img {
+        filter: grayscale(0%) contrast(100%);
+      }
+
+      /* 19. קרן אור אלכסונית חולפת (Light Sweep / Flash) */
+      .fx-19::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        transform: skewX(-25deg);
+        transition: left 0.75s ease;
+        z-index: 2;
+      }
+      .fx-19:hover::after {
+        left: 160%;
+      }
+
+      /* 20. חלון זרקור עגול (Spotlight Mask) */
+      .fx-20 img {
+        filter: brightness(0.25);
+        transition: filter 0.5s ease;
+      }
+      .fx-20:hover img {
+        filter: brightness(1);
+      }
+
+      /* 21. היפוך מראה אופקי (Horizontal Mirror Flip) */
+      .fx-21:hover img {
+        transform: scaleX(-1);
+      }
+
+      /* 22. גליץ' צבעים דיגיטלי (RGB Glitch Shift) */
+      .fx-22:hover img {
+        filter: drop-shadow(4px 0px 0px red) drop-shadow(-4px 0px 0px cyan);
+        transform: translate(-2px, 2px);
+      }
+
+      /* 23. מסגרת פנימית מתרחבת (Border Outline Inset) */
+      .fx-23::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 2px solid white;
+        transform: scale(0);
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: 2;
+      }
+      .fx-23:hover::before {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      /* 24. אפקט צבע עמוק (Sepia to Vibrant Saturation) */
+      .fx-24 img {
+        filter: sepia(80%) hue-rotate(180deg);
+        transition: filter 0.6s ease;
+      }
+      .fx-24:hover img {
+        filter: sepia(0%) saturate(140%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>מדריך מלא: 24 אפקטי Image Hover ב-CSS</h1>
+    <p class="main-subtitle">
+      בחר אפקט כדי לראות את ההדגמה החיה, את ההסבר ואת פקודת ה-CSS המרכזית שמבצעת
+      אותו:
+    </p>
+
+    <!-- רשת כפתורים -->
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <!-- מסך התצוגה המרכזי -->
+    <div class="viewer">
+      <div class="lesson-header">
+        <div class="title-row">
+          <span class="lesson-title" id="effectTitle"></span>
+          <span class="css-badge" id="cssBadge"></span>
+        </div>
+        <p class="lesson-desc" id="effectDesc"></p>
+      </div>
+
+      <div class="stage" id="stageArea"></div>
+    </div>
+
+    <script>
+      // מאגר 24 האפקטים המלא
+      const effectsData = [
+        {
+          id: "fx-1",
+          title: "אפקט 1: זום וסיבוב עם כותרת שקופה",
+          cmd: "transform: scale(1.3) rotate(15deg);",
+          desc: "התמונה גדלה ב-30% ומסתובבת ב-15 מעלות, בעוד שכבת הכיתוב עוברת מ-opacity: 0 ל-1[cite: 28].",
+          html: `
+          <div class="hover-box fx-1">
+            <img src="https://picsum.photos/id/1015/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Amazing Caption</h2>
+              <p>You can write anything here</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-2",
+          title: "אפקט 2: כותרת נכנסת מלמעלה ותמונה מסתובבת הפוך",
+          cmd: "transform: translateY(-100%) -> translateY(0);",
+          desc: "הכיתוב מחליק מ-translateY(-100%) למקומו, והתמונה מסתובבת במינוס 15 מעלות[cite: 28].",
+          html: `
+          <div class="hover-box fx-2">
+            <img src="https://picsum.photos/id/1018/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Amazing Caption</h2>
+              <p>You can write anything here</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-3",
+          title: "אפקט 3: החלפת מקומות אנכית (Push Down)",
+          cmd: "img: translateY(100%); caption: translateY(0);",
+          desc: "התמונה נדחפת ב-translateY(100%) כלפי מטה והשכבה השחורה תופסת את מקומה[cite: 28].",
+          html: `
+          <div class="hover-box fx-3">
+            <img src="https://picsum.photos/id/1016/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Amazing Caption</h2>
+              <p>You can write anything here</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-4",
+          title: "אפקט 4: פס תחתון (30%) שמתרומם למעלה",
+          cmd: "height: 30%; transform: translateY(100%) -> (0);",
+          desc: "הכיתוב תופס רק 30% גובה בחלק התחתון ומתרומם למעלה בעוד התמונה זזה מעט[cite: 28].",
+          html: `
+          <div class="hover-box fx-4">
+            <img src="https://picsum.photos/id/1025/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Amazing Caption</h2>
+              <p>פס כיתוב קומפקטי תחתון</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-5",
+          title: "אפקט 5: שכבה צבעונית מסתובבת ב-45 מעלות",
+          cmd: "transform: translateY(0) rotate(45deg) scale(2.2);",
+          desc: "שכבת רקע צבעונית נכנסת מלמטה ומסתובבת ב-45 מעלות כדי לכסות את השטח[cite: 28].",
+          html: `
+          <div class="hover-box fx-5">
+            <img src="https://picsum.photos/id/1035/600/400" alt="Demo">
+            <div class="overlay-rotate"></div>
+            <div class="hover-caption">
+              <h2>Creative Title</h2>
+              <p>שכבה מלוכסנת שנכנסת ומסתובבת</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-6",
+          title: "אפקט 6: מסגרת לבנה עבה וזום עם סיבוב קל",
+          cmd: "border: 10px solid white; transform: scale(1.2) rotate(9deg);",
+          desc: "מסגרת לבנה מוצקה ברוחב 10px והתמונה מבצעת זום וסיבוב פנימי קל[cite: 28].",
+          html: `
+          <div class="hover-box fx-6">
+            <img src="https://picsum.photos/id/1039/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-7",
+          title: "אפקט 7: כניסה מדורגת של טקסטים מכיוונים נגדיים",
+          cmd: "transition-delay: 0.3s, 0.4s, 0.5s;",
+          desc: "הכותרת יורדת מלמעלה, הפסקה עולה מלמטה, והכפתור נכנס בדיליי מדורג[cite: 28].",
+          html: `
+          <div class="hover-box fx-7">
+            <img src="https://picsum.photos/id/1043/600/400" alt="Demo">
+            <div class="bg-bar"></div>
+            <div class="hover-caption">
+              <h2>Image Hover</h2>
+              <p>טקסט שנכנס מכיוונים מנוגדים בצורה מתוזמנת[cite: 28]</p>
+              <a href="#" class="hover-btn">Read More</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-8",
+          title: "אפקט 8: שילוב סיבובים וכניסות אלכסוניות",
+          cmd: "transform: translateY(300px) rotate(90deg) -> (0);",
+          desc: "הפסקה מגיעה תוך כדי סיבוב של 90 מעלות והשכבה האלכסונית מתיישרת[cite: 28].",
+          html: `
+          <div class="hover-box fx-8">
+            <img src="https://picsum.photos/id/1050/600/400" alt="Demo">
+            <div class="bg-bar"></div>
+            <div class="hover-caption">
+              <h2>Rotate & Slide</h2>
+              <p>כניסה סיבובית של אלמנטים פנימיים[cite: 28]</p>
+              <a href="#" class="hover-btn">Explore</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-9",
+          title: "אפקט 9: כיווץ התמונה ל-0 והחלפתה בשכבה מסתובבת",
+          cmd: "img: scale(0); bg-bar: scale(1) rotate(0deg);",
+          desc: "התמונה מתכווצת לחלוטין (scale: 0) ושכבת רקע שחורה מסתובבת במקומה וחושפת את הטקסט[cite: 28].",
+          html: `
+          <div class="hover-box fx-9">
+            <img src="https://picsum.photos/id/1055/600/400" alt="Demo">
+            <div class="bg-bar"></div>
+            <div class="hover-caption">
+              <h2>Shrink & Reveal</h2>
+              <p>התמונה מתכווצת לנקודה ונעלמת[cite: 28]</p>
+              <a href="#" class="hover-btn">Read More</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-10",
+          title: "אפקט 10: טקסטים שמגיעים ממרחק עצום (Zoom-In)",
+          cmd: "transform: scale(10) -> scale(1);",
+          desc: "הטקסטים מוגדרים מראש כענקיים (scale: 10) ובמעבר עכבר מתכווצים לגודלם המקורי[cite: 28].",
+          html: `
+          <div class="hover-box fx-10">
+            <img src="https://picsum.photos/id/1062/600/400" alt="Demo">
+            <div class="bg-bar"></div>
+            <div class="hover-caption">
+              <h2>Hover Style 10</h2>
+              <p>טקסט שמגיע מעומק המסך לתוך הפוקוס[cite: 28]</p>
+              <a href="#" class="hover-btn">Discover</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-11",
+          title: "אפקט 11: תמונה מסתובבת ב-720 מעלות ונעלמת",
+          cmd: "transform: rotate(720deg) scale(0);",
+          desc: "התמונה מבצעת שני סיבובים שלמים (720deg) תוך כיווץ ל-0, בעוד הטקסטים צונחים פנימה[cite: 28].",
+          html: `
+          <div class="hover-box fx-11">
+            <img src="https://picsum.photos/id/1069/600/400" alt="Demo">
+            <div class="bg-bar"></div>
+            <div class="hover-caption">
+              <h2>720 Spin Out</h2>
+              <p>סיבוב מהיר של התמונה החוצה מהמסך[cite: 28]</p>
+              <a href="#" class="hover-btn">View All</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-12",
+          title: "אפקט 12: צמצם מעגלי מתרחב (Iris Reveal)",
+          cmd: "clip-path: circle(0% -> 75% at 50% 50%);",
+          desc: 'חשיפת השכבה הכחולה ע"י הרחבת עיגול ממרכז התמונה בעזרת clip-path.',
+          html: `
+          <div class="hover-box fx-12">
+            <img src="https://picsum.photos/id/1074/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Iris Reveal</h2>
+              <p>חשיפה של שכבת צבע מתוך צמצם עגול</p>
+              <a href="#" class="hover-btn">Click Me</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-13",
+          title: "אפקט 13: זכוכית מטושטשת מודרנית (Frosted Glass)",
+          cmd: "backdrop-filter: blur(8px); filter: blur(5px);",
+          desc: "התמונה ברקע נמרחת בטשטוש (blur), ומעליה עולה שכבת זכוכית שקופה (backdrop-filter).",
+          html: `
+          <div class="hover-box fx-13">
+            <img src="https://picsum.photos/id/1080/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Frosted Glass</h2>
+              <p>טשטוש התמונה ברקע ומראה זכוכית יוקרתי</p>
+              <a href="#" class="hover-btn">Learn More</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-14",
+          title: "אפקט 14: וילונות אלכסוניים (Diagonal Slices)",
+          cmd: "clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);",
+          desc: "חיתוך מצולע (polygon) שפותח את שכבת הצבע האדומה לאורך אלכסון חד ומודרני.",
+          html: `
+          <div class="hover-box fx-14">
+            <img src="https://picsum.photos/id/1084/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Diagonal Cut</h2>
+              <p>חיתוך גיאומטרי זוויתי של השכבה העליונה</p>
+              <a href="#" class="hover-btn">Read More</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-15",
+          title: "אפקט 15: כרטיס תלת-ממדי מרחף (Card Pop & Glow)",
+          cmd: "transform: translateY(-12px); box-shadow: 0 20px 35px...;",
+          desc: "הכרטיס כולו מתרומם למעלה ומקבל הילת צל רכה וזוהרת עם עליית כיתוב עדינה.",
+          html: `
+          <div class="hover-box fx-15">
+            <img src="https://picsum.photos/id/1082/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Pop & Glow</h2>
+              <p>התרוממות הכרטיס עם צל זוהר מודרני</p>
+              <a href="#" class="hover-btn">Explore</a>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-16",
+          title: "אפקט 16: זום פנורמי איטי (Ken Burns)",
+          cmd: "transition: transform 5s; transform: scale(1.35) translate(-15px, -10px);",
+          desc: "התמונה נעה ומתקרבת באיטיות ממושכת של 5 שניות המדמה צילום קולנועי עמוק.",
+          html: `
+          <div class="hover-box fx-16">
+            <img src="https://picsum.photos/id/1067/600/400" alt="Demo">
+            <div class="hover-caption">
+              <h2>Cinema Motion</h2>
+              <p>זום פנורמי איטי ויוקרתי של סרטי טבע</p>
+            </div>
+          </div>
+        `,
+        },
+        {
+          id: "fx-17",
+          title: "אפקט 17: מסך מפוצל שנפתח (Curtain Split)",
+          cmd: "::before / ::after: transform: translateX(±100%);",
+          desc: "שני חלקי וילון כהים נחצים לשניים (ימינה ושמאלה) וחושפים את התמונה מתחתיהם.",
+          html: `
+          <div class="hover-box fx-17">
+            <img src="https://picsum.photos/id/1059/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-18",
+          title: "אפקט 18: הפיכה משחור-לבן לצבע מלא",
+          cmd: "filter: grayscale(100%) -> grayscale(0%);",
+          desc: "התמונה פותחת כעצם שחור-לבן מנוגד, ובמעבר עכבר מתמלאת בצבעיה הטבעיים.",
+          html: `
+          <div class="hover-box fx-18">
+            <img src="https://picsum.photos/id/1048/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-19",
+          title: "אפקט 19: קרן אור אלכסונית חולפת (Light Flash)",
+          cmd: "transform: skewX(-25deg); left: -120% -> 160%;",
+          desc: "קרן אור שקופה נעה במהירות מקצה לקצה ומדמה הברקת זכוכית יוקרתית.",
+          html: `
+          <div class="hover-box fx-19">
+            <img src="https://picsum.photos/id/1036/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-20",
+          title: "אפקט 20: חלון זרקור עגול (Spotlight Mask)",
+          cmd: "filter: brightness(0.25) -> brightness(1);",
+          desc: "התמונה חשוכה כברירת מחדל ומתבהרת בחדות במעבר עכבר.",
+          html: `
+          <div class="hover-box fx-20">
+            <img src="https://picsum.photos/id/1020/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-21",
+          title: "אפקט 21: היפוך מראה אופקי (Mirror Flip)",
+          cmd: "transform: scaleX(-1);",
+          desc: "הופך את התמונה בציר האופקי ביחס הפוך של 180 מעלות (מראה).",
+          html: `
+          <div class="hover-box fx-21">
+            <img src="https://picsum.photos/id/1011/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-22",
+          title: "אפקט 22: גליץ' צבעים דיגיטלי (RGB Glitch)",
+          cmd: "filter: drop-shadow(4px red) drop-shadow(-4px cyan);",
+          desc: "פיצול ערוצי צבע (אדום ותכלת) עם רעד קל המדמה שיבוש מסך סייברפאנק.",
+          html: `
+          <div class="hover-box fx-22">
+            <img src="https://picsum.photos/id/1005/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-23",
+          title: "אפקט 23: מסגרת פנימית מתרחבת (Frame Outline Inset)",
+          cmd: "::before: border: 2px solid white; transform: scale(0) -> (1);",
+          desc: "מסגרת פנימית לבנה מופיעה ומתרחבת ממרכז התמונה אל הקצוות.",
+          html: `
+          <div class="hover-box fx-23">
+            <img src="https://picsum.photos/id/1002/600/400" alt="Demo">
+          </div>
+        `,
+        },
+        {
+          id: "fx-24",
+          title: "אפקט 24: מעבר צבע רטרו (Sepia to Vibrant Saturation)",
+          cmd: "filter: sepia(80%) -> saturate(140%);",
+          desc: "מעבר מגווני ספיה עתיקים לצבעוניות מוגברת ומודרנית.",
+          html: `
+          <div class="hover-box fx-24">
+            <img src="https://picsum.photos/id/999/600/400" alt="Demo">
+          </div>
+        `,
+        },
+      ];
+
+      const menuEl = document.getElementById("menuGrid");
+      const stageEl = document.getElementById("stageArea");
+      const titleEl = document.getElementById("effectTitle");
+      const badgeEl = document.getElementById("cssBadge");
+      const descEl = document.getElementById("effectDesc");
+
+      function displayEffect(eff, btn) {
+        document
+          .querySelectorAll(".menu-btn")
+          .forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        titleEl.innerText = eff.title;
+        badgeEl.innerText = eff.cmd;
+        descEl.innerText = eff.desc;
+        stageEl.innerHTML = eff.html;
+      }
+
+      // יצירת 24 הכפתורים
+      effectsData.forEach((eff, index) => {
+        const b = document.createElement("button");
+        b.className = "menu-btn";
+        b.innerText = `אפקט ${index + 1}`;
+        b.onclick = () => displayEffect(eff, b);
+        menuEl.appendChild(b);
+      });
+
+      // טעינה ראשונית של אפקט 1
+      displayEffect(effectsData[0], menuEl.firstChild);
+    </script>
+  </body>
+</html>
